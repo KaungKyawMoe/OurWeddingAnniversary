@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Admin · Tone Tone & Papa</title>
+<style>
+:root{--rose:#c76c7b;--deep:#9d3f53;--ivory:#fffaf6;--blush:#f9e3e1;--ink:#5e4147;--line:rgba(157,63,83,.2)}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 Georgia,serif;color:var(--ink);background:var(--ivory);height:100vh;display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:0;border-radius:99px;padding:8px 16px;background:var(--rose);color:#fff;cursor:pointer;font:13px Arial,sans-serif}
+.btn:hover{background:var(--deep)}.btn.ghost{background:#fff;color:var(--deep);border:1px solid var(--line)}.btn.ghost:hover{background:var(--blush)}.btn:disabled{opacity:.5;cursor:default}
+#login{margin:auto;width:min(360px,90vw);padding:32px;background:#fff;border:1px solid var(--line);border-radius:16px;text-align:center;box-shadow:0 18px 55px rgba(123,62,72,.11)}
+#login h1{color:var(--deep);font-weight:400;margin:0 0 16px}input[type=password],input[type=text],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+#login input{margin-bottom:12px}#msg{color:var(--deep);min-height:20px;font-size:13px}
+#app{display:none;flex:1;min-height:0;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff;flex-wrap:wrap}
+header b{color:var(--deep);font-size:17px;font-weight:400;margin-right:auto}#status{font-size:12px;color:#8e6e72}
+main{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
+aside{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:#fff}
+.tabs{display:flex;border-bottom:1px solid var(--line)}.tabs button{flex:1;padding:11px;border:0;background:none;cursor:pointer;border-bottom:2px solid transparent;color:#8e6e72}
+.tabs button.on{color:var(--deep);border-color:var(--rose)}
+.pane{display:none;overflow:auto;padding:14px;flex:1}.pane.on{display:block}
+h3{margin:18px 0 8px;color:var(--deep);font-size:15px;font-weight:400;border-bottom:1px solid var(--line)}h3:first-child{margin-top:0}
+label{display:block;margin:10px 0 3px;font-size:12px;color:#8e6e72}textarea{min-height:84px;resize:vertical}
+.slot{display:flex;gap:12px;margin-bottom:14px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.slot .th{width:84px;height:84px;border-radius:8px;background:var(--blush) center/cover;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;text-align:center;color:#8e6e72}
+.slot .row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.slot small{color:#8e6e72}
+.col{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}input[type=color]{width:100%;height:34px;padding:2px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.stage{display:flex;flex-direction:column;min-height:0;background:#efe3df}
+.devs{display:flex;gap:6px;justify-content:center;padding:8px}.devs .btn.on{background:var(--deep);color:#fff}
+.frame{flex:1;display:flex;justify-content:center;overflow:auto;padding:0 12px 12px}
+iframe{border:0;background:#fff;height:100%;width:100%;max-width:100%;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.15);transition:width .25s}
+@media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:55% 45%}aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style></head><body>
+<form id="login" onsubmit="return login(event)"><h1>♡ Admin</h1><input type="password" id="pw" placeholder="Password" autocomplete="current-password" required>
+<button class="btn" style="width:100%">Sign in</button><p id="msg"></p></form>
+
+<div id="app">
+<header><b>Tone Tone & Papa · Dashboard</b><span id="status"></span>
+<button class="btn ghost" id="discard">Discard changes</button><button class="btn ghost" id="save">Save draft</button>
+<button class="btn" id="publish">Publish</button><a class="btn ghost" href="/" target="_blank" style="text-decoration:none">View live ↗</a><button class="btn ghost" id="out">Sign out</button></header>
+<main><aside><div class="tabs"><button data-t="content" class="on">Content</button><button data-t="images">Images</button><button data-t="theme">Theme & fonts</button></div>
+<div class="pane on" id="p-content"></div><div class="pane" id="p-images"></div><div class="pane" id="p-theme"></div></aside>
+<div class="stage"><div class="devs"><button class="btn ghost on" data-w="100%">Desktop</button><button class="btn ghost" data-w="768px">Tablet</button><button class="btn ghost" data-w="390px">Phone</button></div>
+<div class="frame"><iframe id="pv" title="Live preview"></iframe></div></div></main></div>
+
+<script>
+var $=function(s){return document.querySelector(s)},D={text:{},theme:{},images:{}},PUB='',DEF={},dirty=false,pv=$('#pv');
+var SLOTS=[['hero','Hero photo (top)'],['m1','Memory polaroid 1'],['m2','Memory polaroid 2'],['m3','Memory polaroid 3'],['fav','Love-letter portrait'],['future','Our Future photo']];
+var COLORS=[['rose','Rose (buttons, accents)'],['deepRose','Deep rose (headings)'],['ivory','Ivory (background)'],['blush','Blush (sections)'],['ink','Body text'],['gold','Gold lines']];
+var DEFC={rose:'#c76c7b',deepRose:'#9d3f53',ivory:'#fffaf6',blush:'#f9e3e1',ink:'#5e4147',gold:'#c7a16a'};
+function api(p,o){o=o||{};var h={'X-Requested-With':'admin'};if(o.json){h['Content-Type']='application/json';o.body=JSON.stringify(o.json)}
+ return fetch('/api/'+p,{method:o.method||'GET',headers:h,body:o.body,credentials:'same-origin'}).then(function(r){
+  if(r.status===401&&p!=='login'){show(false);throw new Error('Signed out')}
+  return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Error');return j})})}
+function show(on){$('#app').style.display=on?'flex':'none';$('#login').style.display=on?'none':'block'}
+function login(e){e.preventDefault();$('#msg').textContent='';api('login',{method:'POST',json:{password:$('#pw').value}}).then(boot).catch(function(x){$('#msg').textContent=x.message});return false}
+function status(t){$('#status').textContent=t}
+function send(){pv.contentWindow.postMessage({type:'apply',content:D},location.origin);dirty=JSON.stringify(D)!==PUB;
+ if(dirty)status('Unpublished changes')}
+function body(){return D}
+function boot(){api('draft').then(function(r){D=r.draft;D.text=D.text||{};D.theme=D.theme||{};D.images=D.images||{};PUB=JSON.stringify(r.published);show(true);
+ pv.onload=function(){collect();build();send();status(JSON.stringify(D)===PUB?'Published · up to date':'Unpublished changes')};pv.src='/?preview=1'}).catch(function(){show(false)})}
+function collect(){var d=pv.contentDocument;DEF={};d.querySelectorAll('[data-k]').forEach(function(e){var k=e.dataset.k;
+ if(!DEF[k]||(e.dataset.label&&!DEF[k].label))DEF[k]={label:e.dataset.label||DEF[k]&&DEF[k].label,group:e.dataset.group||DEF[k]&&DEF[k].group,v:e.dataset.d!==undefined?e.dataset.d:e.textContent}})}
+function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+function build(){
+ var P=$('#p-content');P.innerHTML='';var g='';
+ Object.keys(DEF).forEach(function(k){var f=DEF[k];if(f.group!==g){g=f.group;P.appendChild(el('h3','',g))}
+  P.appendChild(el('label','',f.label));var long=f.v.length>60||f.v.indexOf('\n')>-1,i=el(long?'textarea':'input');if(!long)i.type='text';
+  i.value=D.text[k]!==undefined?D.text[k]:f.v;if(long)i.rows=Math.min(8,Math.ceil(f.v.length/42)+f.v.split('\n').length-1);
+  i.oninput=function(){D.text[k]=i.value;send()};P.appendChild(i)});
+ var I=$('#p-images');I.innerHTML='<p><small>JPG, PNG, GIF or WebP, up to 8 MB. Changes show in the preview straight away; Publish to make them live.</small></p>';
+ SLOTS.forEach(function(s){var key=s[0],cur=D.images[key],box=el('div','slot'),th=el('div','th');
+  function paint(){var c=D.images[key];th.style.backgroundImage=c?'url(/uploads/'+c+')':'';th.textContent=c?'':(c===null?'Removed':'Default')}
+  var info=el('div','','<b>'+s[1]+'</b><br>'),row=el('div','row'),fi=el('input');fi.type='file';fi.accept='image/jpeg,image/png,image/gif,image/webp';fi.hidden=true;
+  var up=el('button','btn',D.images[key]?'Replace':'Upload'),del=el('button','btn ghost','Delete');
+  up.onclick=function(){fi.click()};
+  fi.onchange=function(){if(!fi.files[0])return;var fd=new FormData();fd.append('file',fi.files[0]);up.disabled=true;up.textContent='Uploading…';
+   api('upload',{method:'POST',body:fd}).then(function(r){D.images[key]=r.file;up.textContent='Replace';paint();send()}).catch(function(x){alert(x.message);up.textContent='Upload'}).then(function(){up.disabled=false;fi.value=''})};
+  del.onclick=function(){if(confirm('Remove this photo? (A placeholder will show instead.)')){D.images[key]=null;up.textContent='Upload';paint();send()}};
+  row.append(up,del,fi);info.appendChild(row);box.append(th,info);I.appendChild(box);paint()});
+ var T=$('#p-theme'),F=pv.contentWindow.FONTS;T.innerHTML='<h3>Colours</h3>';var cg=el('div','col');
+ COLORS.forEach(function(c){var w=el('div','','<label>'+c[1]+'</label>'),i=el('input');i.type='color';i.value=D.theme[c[0]]||DEFC[c[0]];i.oninput=function(){D.theme[c[0]]=i.value;send()};w.appendChild(i);cg.appendChild(w)});T.appendChild(cg);
+ T.appendChild(el('h3','','Typography'));
+ [['scriptFont','Script / heading font',['Brush Script MT','Great Vibes','Dancing Script','Allura','Parisienne']],['bodyFont','Body font',['Georgia','Playfair Display','Cormorant Garamond','Lora','Libre Baskerville']]].forEach(function(s){
+  T.appendChild(el('label','',s[1]));var sel=el('select','','<option value="">Original</option>'+s[2].map(function(n){return'<option>'+n+'</option>'}).join(''));
+  sel.value=D.theme[s[0]]||'';sel.onchange=function(){sel.value?D.theme[s[0]]=sel.value:delete D.theme[s[0]];send()};T.appendChild(sel)});
+ T.appendChild(el('label','','Paragraph size'));var r=el('input');r.type='range';r.min=.85;r.max=1.25;r.step=.05;r.value=D.theme.scale||1;r.oninput=function(){D.theme.scale=+r.value;send()};T.appendChild(r);
+ T.appendChild(el('h3','','Effects'));var l=el('label','','<input type="checkbox"> Floating hearts'),cb=l.firstChild;l.style.cssText='font-size:14px;color:inherit';cb.checked=D.theme.hearts!==false;cb.onchange=function(){D.theme.hearts=cb.checked;send()};T.appendChild(l);
+ var rs=el('button','btn ghost','Reset theme to original');rs.style.marginTop='18px';rs.onclick=function(){D.theme={};build();send()};T.appendChild(rs)}
+document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){document.querySelectorAll('.tabs button,.pane').forEach(function(x){x.classList.remove('on')});b.classList.add('on');$('#p-'+b.dataset.t).classList.add('on')}});
+document.querySelectorAll('.devs button').forEach(function(b){b.onclick=function(){document.querySelectorAll('.devs button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');pv.style.width=b.dataset.w}});
+function act(btn,fn,ok){btn.onclick=function(){btn.disabled=true;status('Working…');fn().then(function(){status(ok)}).catch(function(x){status('');alert(x.message)}).then(function(){btn.disabled=false})}}
+act($('#save'),function(){return api('draft',{method:'PUT',json:D})},'Draft saved ✓ (not public yet)');
+act($('#publish'),function(){return api('publish',{method:'POST',json:D}).then(function(){PUB=JSON.stringify(D)})},'Published ✓ — your site is live');
+act($('#discard'),function(){if(!confirm('Throw away all unpublished changes?'))return Promise.reject(new Error('Cancelled'));
+ return api('discard',{method:'POST'}).then(function(r){D=r.draft;D.text=D.text||{};D.theme=D.theme||{};D.images=D.images||{};build();send()})},'Reverted to the published version');
+$('#out').onclick=function(){api('logout',{method:'POST'}).then(function(){location.reload()})};
+addEventListener('beforeunload',function(e){if(dirty&&JSON.stringify(D)!==PUB){e.preventDefault();e.returnValue=''}});
+api('me').then(boot).catch(function(){show(false)});
+</script></body></html>

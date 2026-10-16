@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff5f1">
+  <title>Tone Tone & Papa | Our Love Story</title>
+  <style>
+    :root {
+      --ivory: #fffaf6;
+      --blush: #f9e3e1;
+      --rose: #c76c7b;
+      --deep-rose: #9d3f53;
+      --ink: #5e4147;
+      --muted: #8e6e72;
+      --gold: #c7a16a;
+      --line: rgba(157, 63, 83, .2);
+      --shadow: 0 18px 55px rgba(123, 62, 72, .11);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--ivory);
+      font-family: var(--body-font, Georgia, "Times New Roman", serif);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    .script { font-family: var(--script-font, "Brush Script MT", "Segoe Script", cursive); font-weight: 400; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; padding: 13px clamp(16px, 4vw, 56px);
+      background: rgba(255, 250, 246, .92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .brand { color: var(--deep-rose); font-size: 19px; white-space: nowrap; text-decoration: none; }
+    .brand span { color: var(--rose); margin-right: 7px; }
+    nav { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 17px; }
+    nav a { font-size: 12px; text-decoration: none; color: var(--muted); transition: color .2s; }
+    nav a:hover { color: var(--deep-rose); }
+    .date-chip { white-space: nowrap; font-size: 12px; color: var(--deep-rose); }
+    .hero {
+      min-height: 690px; min-height: min(790px, calc(100svh - 55px));
+      display: grid; grid-template-columns: minmax(300px, .92fr) minmax(300px, 1.08fr);
+      align-items: center; overflow: hidden; position: relative;
+      background:
+        radial-gradient(ellipse at 15% 15%, rgba(255,255,255,.92), transparent 43%),
+        linear-gradient(115deg, var(--blush) 0%, var(--ivory) 48%, #e9c2bc 100%);
+    }
+    .hero-copy { position: relative; z-index: 2; padding: 75px clamp(24px, 7vw, 105px); text-align: center; }
+    .eyebrow { text-transform: uppercase; letter-spacing: 3px; font: 10px/1.5 Arial, sans-serif; color: var(--rose); }
+    h1 { color: var(--deep-rose); font-size: clamp(54px, 7.5vw, 104px); line-height: .98; margin: 18px 0 13px; font-weight: 400; }
+    .hero-subtitle { font-size: clamp(19px, 2vw, 25px); margin: 0 0 13px; }
+    .hero-text { max-width: 400px; margin: 0 auto 24px; color: #7e5d62; font-size: 15px; }
+    .date-ribbon { display: inline-block; margin: 8px 0 20px; padding: 6px 22px; color: #fff; background: var(--rose); transform: rotate(-1deg); font-size: 13px; }
+    .heart-rule { color: var(--rose); letter-spacing: 7px; margin: 16px 0; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: 0; border-radius: 99px; padding: 12px 22px;
+      background: var(--rose); color: white; text-decoration: none;
+      font: 13px Arial, sans-serif; cursor: pointer; box-shadow: 0 8px 22px rgba(157,63,83,.18);
+      transition: transform .25s, background .25s;
+    }
+    .btn:hover { transform: translateY(-3px); background: var(--deep-rose); }
+    .hero-photo { height: 100%; min-height: 540px; position: relative; }
+    .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(249,227,225,.4), transparent 35%, rgba(81,42,47,.05)); pointer-events: none; }
+    .photo-slot {
+      position: relative; overflow: hidden; background:
+        linear-gradient(135deg, rgba(255,255,255,.18), rgba(174,90,103,.18)),
+        linear-gradient(145deg, #d8a7a3, #f5d9cf 48%, #a76b70);
+      color: rgba(255,255,255,.92);
+    }
+    .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-slot .placeholder {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      padding: 24px; text-align: center; color: var(--ivory); text-shadow: 0 2px 14px #6c303c;
+      font-size: 14px; letter-spacing: .4px;
+    }
+    .photo-slot img:not([src=""]) + .placeholder { display: none; }
+    .hero-photo .photo-slot { height: 100%; min-height: 540px; }
+    .handwritten-note {
+      position: absolute; z-index: 3; right: 5%; bottom: 8%;
+      max-width: 190px; padding: 15px; color: white; text-align: center;
+      font-size: 22px; line-height: 1.2; transform: rotate(-7deg);
+      text-shadow: 0 2px 14px rgba(0,0,0,.35);
+    }
+    section { padding: 88px clamp(20px, 6vw, 88px); }
+    .section-head { max-width: 680px; margin: 0 auto 35px; text-align: center; }
+    h2 { color: var(--deep-rose); font-size: clamp(36px, 5vw, 59px); line-height: 1.08; margin: 12px 0 17px; font-weight: 400; }
+    .section-head p { max-width: 590px; margin: 0 auto; color: var(--muted); }
+    .divider { width: 62px; height: 1px; background: var(--gold); margin: 22px auto; position: relative; }
+    .divider::after { content: "♥"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); padding: 0 9px; background: inherit; color: var(--rose); font-size: 14px; background-color: var(--ivory); }
+    .story { background: var(--ivory); }
+    .story-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: clamp(30px, 6vw, 75px); align-items: center; max-width: 1120px; margin: auto; }
+    .story-copy h2 { margin-top: 10px; }
+    .story-copy p { color: #795d61; }
+    .collage { min-height: 400px; position: relative; }
+    .polaroid { position: absolute; width: 48%; padding: 10px 10px 30px; background: white; box-shadow: var(--shadow); }
+    .polaroid .photo-slot { height: 220px; }
+    .polaroid small { display: block; text-align: center; padding-top: 8px; color: var(--rose); font-size: 14px; font-style: italic; }
+    .polaroid.one { left: 2%; top: 5%; transform: rotate(-7deg); }
+    .polaroid.two { right: 2%; top: 19%; transform: rotate(6deg); }
+    .polaroid.three { left: 25%; bottom: 0; transform: rotate(-2deg); }
+    .apology { background: linear-gradient(120deg, var(--blush), var(--ivory)); }
+    .apology-grid { max-width: 1100px; margin: auto; display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(30px, 6vw, 75px); }
+    .letter-art { min-height: 410px; padding: 35px; display: flex; align-items: center; justify-content: center; }
+    .paper {
+      background: #fffaf0; padding: clamp(25px, 4vw, 45px); width: 100%; max-width: 450px;
+      box-shadow: 0 18px 50px rgba(103,54,56,.13); transform: rotate(-3deg);
+      border: 1px solid #ecd8c5; position: relative;
+    }
+    .paper::before { content: "♥"; position: absolute; top: -22px; left: 18px; color: var(--rose); font-size: 38px; }
+    .paper p { font-size: 20px; line-height: 1.6; }
+    .apology-copy p { color: #75575c; }
+    .apology-copy .signature { font-size: 24px; color: var(--deep-rose); }
+    .reasons { background: var(--ivory); }
+    .reasons-grid { max-width: 1100px; margin: 35px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .reason {
+      background: linear-gradient(150deg, #fff6f2, #f9e8e5); border: 1px solid rgba(199,108,123,.12);
+      border-radius: 15px; padding: 27px 20px; text-align: center; transition: transform .25s, box-shadow .25s;
+    }
+    .reason:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .reason .icon { font-size: 30px; color: var(--rose); }
+    .reason h3 { font-weight: 400; font-size: 20px; margin: 9px 0; color: var(--deep-rose); }
+    .reason p { font-size: 14px; margin: 0; color: var(--muted); }
+    .love-letter { background: linear-gradient(135deg, var(--blush), var(--ivory) 60%, #f0d0cb); }
+    .love-letter-grid { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 1.1fr .9fr; gap: 50px; align-items: center; }
+    .full-letter { padding: clamp(25px, 5vw, 48px); background: rgba(255,250,241,.92); border: 1px solid #ead4c2; box-shadow: var(--shadow); }
+    .full-letter p { font-size: 16px; color: #6d5055; }
+    .full-letter .salutation { font-size: 23px; font-style: italic; color: var(--deep-rose); }
+    .portrait { padding: 12px 12px 38px; background: white; box-shadow: var(--shadow); transform: rotate(3deg); }
+    .portrait .photo-slot { height: 430px; }
+    .portrait figcaption { text-align: center; color: var(--rose); font-size: 24px; padding-top: 13px; font-style: italic; }
+    .future { background: var(--ivory); }
+    .future-grid { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 35px; align-items: center; }
+    .future-image { min-height: 340px; border-radius: 4px; }
+    .future-image .photo-slot { height: 360px; border-radius: 4px; }
+    .future-quote { background: var(--blush); color: var(--deep-rose); padding: 35px; text-align: center; font-size: clamp(27px, 4vw, 44px); line-height: 1.2; transform: rotate(-2deg); }
+    .ending {
+      text-align: center; overflow: hidden; position: relative;
+      background: radial-gradient(ellipse at 20% 80%, var(--blush), transparent 45%), linear-gradient(120deg, var(--ivory), var(--blush));
+    }
+    .ending h2 { font-size: clamp(42px, 7vw, 75px); }
+    .ending .final-copy { max-width: 610px; margin: 0 auto 25px; }
+    .final-heart { font-size: 36px; color: var(--rose); animation: heartbeat 1.7s ease-in-out infinite; display: inline-block; }
+    @keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+    .footer { padding: 25px 20px; text-align: center; color: var(--muted); background: var(--ivory); font-size: 12px; }
+    .floating-heart { position: fixed; z-index: 1; pointer-events: none; bottom: -30px; color: rgba(199,108,123,.55); animation: float-up linear forwards; }
+    @keyframes float-up { from { transform: translateY(0) rotate(0deg); opacity: 0; } 12% { opacity: .8; } to { transform: translateY(-110vh) rotate(35deg); opacity: 0; } }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .back-top { position: fixed; z-index: 10; bottom: 18px; right: 18px; width: 42px; height: 42px; border: 0; border-radius: 50%; background: var(--rose); color: white; cursor: pointer; box-shadow: var(--shadow); }
+    @media (max-width: 900px) {
+      .topbar { flex-wrap: wrap; justify-content: center; }
+      nav { justify-content: center; gap: 12px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { padding: 65px 25px 35px; }
+      .hero-photo, .hero-photo .photo-slot { min-height: 400px; height: 48vh; }
+      .story-grid, .apology-grid, .love-letter-grid, .future-grid { grid-template-columns: 1fr; }
+      .collage { max-width: 650px; width: 100%; margin: auto; }
+      .letter-art { min-height: 330px; }
+      .portrait { max-width: 470px; width: 90%; margin: auto; }
+      .future-image { order: 2; }
+    }
+    @media (max-width: 580px) {
+      .topbar { gap: 7px; padding: 12px 10px; }
+      .brand { font-size: 18px; }
+      nav { gap: 8px 12px; }
+      nav a { font-size: 11px; }
+      .date-chip { width: 100%; text-align: center; }
+      section { padding: 65px 20px; }
+      .hero-photo, .hero-photo .photo-slot { min-height: 330px; height: 42vh; }
+      .collage { min-height: 350px; }
+      .polaroid { width: 49%; padding: 7px 7px 24px; }
+      .polaroid .photo-slot { height: 160px; }
+      .polaroid.three { left: 22%; }
+      .reasons-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .reason { padding: 20px 13px; }
+      .reason h3 { font-size: 17px; }
+      .reason p { font-size: 13px; }
+      .paper p { font-size: 18px; }
+      .portrait .photo-slot { height: 350px; }
+      .handwritten-note { font-size: 18px; right: 3%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+    [data-k]{white-space:pre-line}.no-hearts .floating-heart{display:none}
+    .story-copy p,.apology-copy p,.full-letter p,.future-grid p,.hero-text{zoom:var(--scale,1)}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand script" href="#home"><span>♡</span><span data-k="brand" data-label="Site name (top left)" data-group="General">Tone Tone & Papa</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#story">Our Story</a>
+      <a href="#apology">My Apology</a>
+      <a href="#reasons">Why I Love You</a>
+      <a href="#letter">My Letter</a>
+      <a href="#future">Our Future</a>
+    </nav>
+    <div class="date-chip">♡ &nbsp; <span data-k="date">October 12, 2026</span></div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <div data-k="hero_eyebrow" data-label="Top line" data-group="Hero" class="eyebrow">For my wife, my love, my home</div>
+        <div data-k="hero_kicker" data-label="Kicker" data-group="Hero" class="script" style="font-size:clamp(22px,3vw,34px);color:var(--rose)">Happy Anniversary</div>
+        <h1 data-k="hero_title" data-label="Big title" data-group="Hero" class="script">Tone Tone</h1>
+        <div class="heart-rule">— ♡ —</div>
+        <p data-k="hero_subtitle" data-label="Subtitle" data-group="Hero" class="hero-subtitle">My Love, My Everything</p>
+        <p data-k="hero_text" data-label="Intro text" data-group="Hero" class="hero-text">More than five years together, and my heart still chooses you. Today, tomorrow, and always.</p>
+        <div data-k="date" data-label="Anniversary date (used everywhere)" data-group="General" class="date-ribbon">October 12, 2026</div><br>
+        <a class="btn" href="#letter">Open My Heart <span>♥</span></a>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-slot">
+          <img data-img="hero" src="photos/hero-couple.jpg" alt="Tone Tone and Papa together" onerror="this.style.display='none'">
+          <div class="placeholder">Add your favourite couple photo here<br><small>photos/hero-couple.jpg</small></div>
+        </div>
+        <div data-k="hero_note" data-label="Handwritten note on photo" data-group="Hero" class="handwritten-note script">You are my always
+and forever ♡</div>
+      </div>
+    </section>
+
+    <section class="story" id="story">
+      <div class="story-grid">
+        <div class="story-copy reveal">
+          <div data-k="story_eyebrow" data-label="Small heading" data-group="Our Story" class="eyebrow">Chapters of us</div>
+          <h2 data-k="story_title" data-label="Heading" data-group="Our Story" class="script">Our Love Story</h2>
+          <p><strong data-k="story_lead" data-label="Bold lead line" data-group="Our Story">More than five years of love, laughter, and growth.</strong></p>
+          <p data-k="story_body" data-label="Paragraph" data-group="Our Story">From the moment we met, to all the little and big moments, you have made my life so much brighter. Every chapter with you is a blessing, and I'm so grateful for the journey we've shared — and for all the beautiful chapters still to come.</p>
+          <a class="btn" href="#memories">View Our Memories ♡</a>
+        </div>
+        <div class="collage reveal" id="memories" aria-label="Our photo memories">
+          <div class="polaroid one">
+            <div class="photo-slot"><img data-img="m1" src="photos/memory-1.jpg" alt="A favourite memory together" onerror="this.style.display='none'"><div class="placeholder">First favourite memory<br><small>photos/memory-1.jpg</small></div></div>
+            <small data-k="cap1" data-label="Photo 1 caption" data-group="Our Story">One of my favourite days</small>
+          </div>
+          <div class="polaroid two">
+            <div class="photo-slot"><img data-img="m2" src="photos/memory-2.jpg" alt="A happy day together" onerror="this.style.display='none'"><div class="placeholder">A happy day together<br><small>photos/memory-2.jpg</small></div></div>
+            <small data-k="cap2" data-label="Photo 2 caption" data-group="Our Story">Better together</small>
+          </div>
+          <div class="polaroid three">
+            <div class="photo-slot"><img data-img="m3" src="photos/memory-3.jpg" alt="A special moment in our story" onerror="this.style.display='none'"><div class="placeholder">Another special moment<br><small>photos/memory-3.jpg</small></div></div>
+            <small data-k="cap3" data-label="Photo 3 caption" data-group="Our Story">Always us ♡</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="apology" id="apology">
+      <div class="apology-grid">
+        <div class="letter-art reveal">
+          <div class="paper">
+            <p data-k="paper_text" data-label="Handwritten note" data-group="Apology" class="script">I'm sorry for the pain I caused. You mean the world to me. Please know that my love for you is real, and I'm committed to doing better.</p>
+            <p data-k="paper_sign" data-label="Note signature" data-group="Apology" class="script" style="text-align:right;color:var(--deep-rose)">I love you, always.
+— Papa</p>
+          </div>
+        </div>
+        <div class="apology-copy reveal">
+          <div data-k="apology_eyebrow" data-label="Small heading" data-group="Apology" class="eyebrow">My apology</div>
+          <h2 data-k="apology_title" data-label="Heading" data-group="Apology" class="script">I'm Truly Sorry, Tone Tone</h2>
+          <p data-k="apology_1" data-label="Paragraph 1" data-group="Apology">I know I haven't always been perfect. I've made mistakes, and I may have said or done things that hurt you. I'm truly sorry for the pain I caused.</p>
+          <p data-k="apology_2" data-label="Paragraph 2" data-group="Apology">You deserve love, respect, and happiness — always. I never want to take your feelings for granted, and I promise to be more patient, understanding, and mindful of your heart.</p>
+          <p data-k="apology_3" data-label="Paragraph 3" data-group="Apology">Please don't feel like you have to forgive me right away. I just want you to know that I love you deeply, and I'm committed to being a better man for you.</p>
+          <div class="heart-rule">— ♡ —</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reasons" id="reasons">
+      <div class="section-head reveal">
+        <div data-k="reasons_eyebrow" data-label="Small heading" data-group="Why I Love You" class="eyebrow">A thousand reasons</div>
+        <h2 data-k="reasons_title" data-label="Heading" data-group="Why I Love You" class="script">Why I Love You</h2>
+        <p data-k="reasons_intro" data-label="Intro" data-group="Why I Love You">You're not just my partner. You're my home.</p>
+      </div>
+      <div class="reasons-grid">
+        <article class="reason reveal"><div class="icon">♡</div><h3 data-k="r1t" data-label="Reason 1 title" data-group="Why I Love You">Your Kind Heart</h3><p data-k="r1d" data-label="Reason 1 text" data-group="Why I Love You">You always think of others, even when you're tired.</p></article>
+        <article class="reason reveal"><div class="icon">☺</div><h3 data-k="r2t" data-label="Reason 2 title" data-group="Why I Love You">Your Beautiful Smile</h3><p data-k="r2d" data-label="Reason 2 text" data-group="Why I Love You">You light up my darkest days and make everything feel better.</p></article>
+        <article class="reason reveal"><div class="icon">☆</div><h3 data-k="r3t" data-label="Reason 3 title" data-group="Why I Love You">Your Strength</h3><p data-k="r3d" data-label="Reason 3 text" data-group="Why I Love You">You are stronger than you think, and you inspire me every day.</p></article>
+        <article class="reason reveal"><div class="icon">✿</div><h3 data-k="r4t" data-label="Reason 4 title" data-group="Why I Love You">Your Love</h3><p data-k="r4d" data-label="Reason 4 text" data-group="Why I Love You">You love so deeply, and it makes me feel so special.</p></article>
+        <article class="reason reveal"><div class="icon">∞</div><h3 data-k="r5t" data-label="Reason 5 title" data-group="Why I Love You">Your Uniqueness</h3><p data-k="r5d" data-label="Reason 5 text" data-group="Why I Love You">There is no one else in the world like you, Tone Tone.</p></article>
+        <article class="reason reveal"><div class="icon">⌂</div><h3 data-k="r6t" data-label="Reason 6 title" data-group="Why I Love You">Our Future</h3><p data-k="r6d" data-label="Reason 6 text" data-group="Why I Love You">I can't imagine my life without you. You are my forever.</p></article>
+      </div>
+    </section>
+
+    <section class="love-letter" id="letter">
+      <div class="love-letter-grid">
+        <div class="reveal">
+          <div data-k="letter_eyebrow" data-label="Small heading" data-group="Love Letter" class="eyebrow">Straight from my heart</div>
+          <h2 data-k="letter_title" data-label="Heading" data-group="Love Letter" class="script">My Love Letter</h2>
+          <p data-k="letter_intro" data-label="Intro" data-group="Love Letter">You're not just my partner — you're my home.</p>
+          <div class="full-letter">
+            <p data-k="letter_open" data-label="Salutation" data-group="Love Letter" class="salutation">My dearest Tone Tone,</p>
+            <p data-k="letter_1" data-label="Paragraph 1" data-group="Love Letter">You are one of the most beautiful parts of my life. I love you — not just for the way you look, but for the way you love, care, smile, and make everything better. You are my peace, my happiness, and my greatest blessing.</p>
+            <p data-k="letter_2" data-label="Paragraph 2" data-group="Love Letter">I may not always say it enough, but I want you to know: I love you so much. Every moment with you feels like a dream I never want to end. Thank you for being you — for your love, your strength, your patience, and your heart.</p>
+            <p data-k="letter_3" data-label="Paragraph 3" data-group="Love Letter">I'm so lucky to have you, and I promise to keep choosing you, today, tomorrow, and always.</p>
+            <p data-k="letter_4" data-label="Paragraph 4" data-group="Love Letter">Happy Anniversary, my love.</p>
+            <p data-k="letter_close" data-label="Closing" data-group="Love Letter" class="salutation">With all my heart,
+Papa ♡</p>
+          </div>
+        </div>
+        <figure class="portrait reveal">
+          <div class="photo-slot">
+            <img data-img="fav" src="photos/favourite-photo.jpg" alt="Papa and Tone Tone's favourite photo" onerror="this.style.display='none'">
+            <div class="placeholder">Place your favourite photo together here<br><small>photos/favourite-photo.jpg</small></div>
+          </div>
+          <figcaption data-k="portrait_caption" data-label="Photo caption" data-group="Love Letter" class="script">I love you always ♡</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="future" id="future">
+      <div class="future-grid">
+        <div class="reveal">
+          <div data-k="future_eyebrow" data-label="Small heading" data-group="Our Future" class="eyebrow">Together, always</div>
+          <h2 data-k="future_title" data-label="Heading" data-group="Our Future" class="script">Our Future</h2>
+          <p data-k="future_1" data-label="Paragraph 1" data-group="Our Future">I want to keep building a beautiful life with you.</p>
+          <p data-k="future_2" data-label="Paragraph 2" data-group="Our Future">I dream of more adventures, more laughter, more quiet moments, and more chances to show you how much you mean to me. I want to be the man you can always count on — not just in good times, but in every season of life.</p>
+          <p data-k="future_3" data-label="Paragraph 3" data-group="Our Future">I may not be perfect, but I'm willing to grow, learn, and love you better, every single day.</p>
+          <a class="btn" href="#ending">Our Next Chapter ♥</a>
+        </div>
+        <div class="reveal">
+          <div data-k="future_quote" data-label="Quote card" data-group="Our Future" class="future-quote script">Same love.
+Bigger dreams.
+Forever us ♡</div>
+          <div class="future-image" style="margin-top:24px">
+            <div class="photo-slot">
+              <img data-img="future" src="photos/our-future.jpg" alt="A beautiful memory representing our future" onerror="this.style.display='none'">
+              <div class="placeholder">Add a photo that represents your future together<br><small>photos/our-future.jpg</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ending" id="ending">
+      <div class="final-heart">♥</div>
+      <div data-k="end_eyebrow" data-label="Small heading" data-group="Ending" class="eyebrow">Forever and always</div>
+      <h2 data-k="end_title" data-label="Heading" data-group="Ending" class="script">Happy Anniversary,
+My Love</h2>
+      <div class="divider"></div>
+      <p data-k="end_copy" data-label="Closing paragraph" data-group="Ending" class="final-copy">Thank you for being you. Thank you for loving me. Thank you for being part of my life. I love you today, tomorrow, and always.</p>
+      <button class="btn" id="message-button" type="button">One Last Little Message 💌</button>
+      <p data-k="secret_message" data-label="Secret message (after button)" data-group="Ending" id="secret-message" hidden style="max-width:570px;margin:25px auto 0">Tone Tone, if I could choose again, I would still hope to find you, love you, and build a beautiful life beside you. I can't change yesterday, but I can keep showing you my love through the way I treat you. You will always hold a special place in my heart. — Papa ❤️</p>
+      <div class="heart-rule">— ♡ —</div>
+      <p class="script" style="font-size:26px;color:var(--deep-rose)"><span data-k="date">October 12, 2026</span> · <span data-k="end_line" data-label="Last line" data-group="Ending">A day to celebrate our love</span></p>
+    </section>
+  </main>
+
+  <footer data-k="footer_text" data-label="Footer" data-group="General" class="footer">Made with all my love, for Tone Tone, from Papa. ♡</footer>
+  <button class="back-top" aria-label="Back to top" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script>
+    // Reveal sections gently as they enter the viewport.
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // The final love note opens only when she chooses to read it.
+    document.getElementById('message-button').addEventListener('click', () => {
+      const message = document.getElementById('secret-message');
+      message.hidden = false;
+      message.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('message-button').textContent = 'With all my love, Tone Tone ❤️';
+    });
+
+    // A few gentle floating hearts; reduced-motion settings are respected by CSS.
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+      function createHeart() {
+        const heart = document.createElement('span');
+        heart.className = 'floating-heart';
+        heart.textContent = Math.random() > 0.35 ? '♥' : '✿';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = (12 + Math.random() * 14) + 'px';
+        heart.style.animationDuration = (9 + Math.random() * 8) + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 18000);
+      }
+      setInterval(createHeart, 1800);
+    }
+  </script>
+  <script src="/site.js"></script>
+</body>
+</html>
